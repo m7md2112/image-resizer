@@ -1,14 +1,14 @@
 {
-  "name": "xprs-srvr",
+  "name": "image-resizer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
+    "lint": "npx prettier --write ./src && npx eslint src",
     "build": "npx tsc",
-    "test": "npm run build && jasmine",
-    "prod": "node build/server.js",
-    "lint": "npx prettier --write ./src && npx eslint src"
+    "test": "npm run build && npx jasmine",
+    "prod": "node build/server.js"
   },
   "keywords": [],
   "author": "",
