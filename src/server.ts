@@ -6,7 +6,7 @@ import { resizeImage } from "./api/resize-image";
 dotenv.config();
 
 const app = express();
-const port = <string>process.env.PORT;
+const port = process.env.PORT as string;
 
 app.use("/images", express.static("images"));
 

@@ -2,23 +2,23 @@ import { Response, Request } from "express";
 import sharp from "sharp";
 import * as fs from "fs";
 
-sharp.cache({ files: 0 }); //remove cached image
+sharp.cache({ files: 0 }); // remove cached image
 
-export const imageProcessor = (req: Request, res: Response) => {
+export const imageProcessor = (req: Request, res: Response): void => {
   const { filename, height, width } = req.query;
-  let isOriginalImageExist = fs.existsSync("./images/image.jpg");
-  let isNewImageExist = fs.existsSync("./images/newImage.jpg");
+  const isOriginalImageExist: boolean = fs.existsSync("./images/image.jpg");
+  const isNewImageExist: boolean = fs.existsSync("./images/newImage.jpg");
 
-  function resizing() {
-    res.write(`<p>Now processing ${filename}</p>`);
-    sharp(("./images/" + filename) as string)
+  function resizing(): void {
+    res.write(`<p>Now processing ${filename as string}</p>`);
+    sharp(`./images/${filename as string}`)
       .resize(Number(width), Number(height))
       .toFile("./images/" + "newImage.jpg")
       .then(() => res.write(`<p> <img src=/images/newImage.jpg> </p>`))
       .catch((e) => res.write(`<p>Warning 1 ${JSON.stringify(e)}</p>`));
   }
 
-  function readMetaData() {
+  function readMetaData(): void {
     sharp("./images/newImage.jpg")
       .metadata()
       .then((imageData) => {
@@ -28,7 +28,8 @@ export const imageProcessor = (req: Request, res: Response) => {
         ) {
           resizing();
         }
-      });
+      })
+      .catch((e) => console.log(e));
   }
 
   if (!isOriginalImageExist) {
