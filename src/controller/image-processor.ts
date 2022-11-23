@@ -16,6 +16,7 @@ export const imageProcessor = (req: Request, res: Response): void => {
       .toFile("./images/" + "newImage.jpg")
       .then(() => res.write(`<p> <img src=/images/newImage.jpg> </p>`))
       .catch((e) => res.write(`<p>Warning 1 ${JSON.stringify(e)}</p>`));
+      res.end()
   }
 
   function readMetaData(): void {
@@ -29,7 +30,10 @@ export const imageProcessor = (req: Request, res: Response): void => {
           resizing();
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) =>{ 
+        res.write(`<p>Warning 2 ${JSON.stringify(e)}</p>`)
+        res.end()
+        console.log(e)});
   }
 
   if (!isOriginalImageExist) {
