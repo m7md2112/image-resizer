@@ -6,7 +6,7 @@ export const imageDataValidator = (
   next: NextFunction
 ) => {
   const { filename, height, width } = req.query;
-  if (filename && height && width) {
+  if ((filename as string) && Number(height) && Number(width)) {
     next();
   } else {
     res.send(`<p>Please provide image filename, height and width</p>`);
