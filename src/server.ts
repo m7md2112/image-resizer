@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 const port = <string>process.env.PORT;
 
-app.use(express.static("images"));
+app.use("/images", express.static("images"));
 
 app.get("/", (req, res: express.Response<string>) => {
   res.send("Ugliest image processing tool");
