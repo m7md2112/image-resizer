@@ -1,54 +1,31 @@
 import { Response, Request } from "express";
-import sharp from "sharp";
-import * as fs from "fs";
-
-sharp.cache({ files: 0 }); // remove cached image
+import { existsSync } from "fs";
+import { imageResize } from "../utils/image-resizer";
 
 export const imageProcessor = (req: Request, res: Response): void => {
-  const { filename, height, width } = req.query;
-  const isOriginalImageExist: boolean = fs.existsSync("./images/image.jpg");
-  const isNewImageExist: boolean = fs.existsSync("./images/newImage.jpg");
+  const { filename, width, height } = req.query;
 
-  function resizing(): void {
-    res.write(`<p>Now processing ${filename as string}</p>`);
-    sharp(`./images/${filename as string}`)
-      .resize(Number(width), Number(height))
-      .toFile("./images/" + "newImage.jpg")
-      .then(() => res.write(`<p> <img src=/images/newImage.jpg> </p>`))
-      .catch((e) => res.write(`<p>Warning 1 ${JSON.stringify(e)}</p>`));
-      res.end()
-  }
+  const isInputImageExist: boolean = existsSync(
+    `./images/${filename as string}`
+  );
 
-  function readMetaData(): void {
-    sharp("./images/newImage.jpg")
-      .metadata()
-      .then((imageData) => {
-        if (
-          Number(imageData.width) !== Number(width) ||
-          Number(imageData.height) !== Number(height)
-        ) {
-          resizing();
-        }
-      })
-      .catch((e) =>{ 
-        res.write(`<p>Warning 2 ${JSON.stringify(e)}</p>`)
-        res.end()
-        console.log(e)});
-  }
+  const isResizedImageExist: boolean = existsSync(
+    `./images/resized-${Number(width)}x${Number(height)}-${filename as string}`
+  );
 
-  if (!isOriginalImageExist) {
-    res.write(`<p>Warning: please put image.jpg in images directory</p>`);
-    res.end();
+  if (isInputImageExist && !isResizedImageExist) {
+    imageResize(filename as string, Number(width), Number(height));
+  } else if (!isInputImageExist) {
+    res.write(
+      `<p>Please make sure image filename is correct or the image is exist in images directory.</p>`
+    );
     return;
   }
 
-  if (isOriginalImageExist && !isNewImageExist) {
-    resizing();
-    res.write(`<p> <img src=/images/newImage.jpg> </p>`);
-    res.end();
-  } else {
-    readMetaData();
-    res.write(`<p> <img src=/images/newImage.jpg> </p>`);
-    res.end();
-  }
+  res.write(
+    `<div><img src=/images/resized-${Number(width)}x${Number(height)}-${
+      filename as string
+    }></div>`
+  );
+  res.end();
 };

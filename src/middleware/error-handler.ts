@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
 
 export const errorHandler = (req: Request, res: Response): void => {
-  res.send("<p>Warning Server Error</p>");
+  res.status(404).send("<p>Warning Resource not found</p>");
 };
