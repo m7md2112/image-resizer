@@ -14,7 +14,9 @@ export const imageProcessor = (req: Request, res: Response): void => {
   );
 
   if (isInputImageExist && !isResizedImageExist) {
-    imageResize(filename as string, Number(width), Number(height));
+    imageResize(filename as string, Number(width), Number(height)).catch(
+      console.log
+    );
   } else if (!isInputImageExist) {
     res.write(
       `<p>Please make sure image filename is correct or the image is exist in images directory.</p>`
