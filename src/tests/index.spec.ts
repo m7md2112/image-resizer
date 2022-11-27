@@ -1,3 +1,4 @@
+import { existsSync } from "fs";
 import supertest from "supertest";
 import { app } from "../server";
 import { imageResize } from "../utils/image-resizer";
@@ -13,14 +14,11 @@ describe("endpoint: /", (): void => {
 
 /**
  * to make this test successfully make sure there are image with name test-image.jpg inside images directory.
- * the test will resize the image and verify that resized image are exist other wise 404 status return.
+ * the test will resize the image and verify that resized image are exist.
  */
 describe("image-resizer utility", (): void => {
-  it("resize test-image.jpg successfully", async () => {
-    imageResize(`test-image.jpg`, 300, 200);
-    const response: supertest.Response = await appServer.get(
-      "/images/resized-300x200-test-image.jpg"
-    );
-    expect(response.status).toBe(200);
-  });
+  it("resize test-image.jpg successfully", async () =>
+    await imageResize(`test-image.jpg`, 300, 200).then(() =>
+      expect(existsSync("./images/resized-300x200-test-image.jpg")).toBe(true)
+    ));
 });
