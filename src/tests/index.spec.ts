@@ -17,8 +17,8 @@ describe("endpoint: /", (): void => {
  * the test will resize the image and verify that resized image are exist.
  */
 describe("image-resizer utility", (): void => {
-  it("resize test-image.jpg successfully", async () =>
-    await imageResize(`test-image.jpg`, 300, 200).then(() =>
-      expect(existsSync("./images/resized-300x200-test-image.jpg")).toBe(true)
-    ));
+  it("resize test-image.jpg successfully", async () => {
+    await imageResize(`test-image.jpg`, 5000, 3000);
+    expect(existsSync("./images/resized-5000x3000-test-image.jpg")).toBe(true);
+  });
 });
